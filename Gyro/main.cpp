@@ -18,7 +18,6 @@ float timeStep = 0.01;
 float pitch = 0;
 float roll = 0;
 float yaw = 0;
-int rotations = 0;
 float result = 0;
 
 void setup() 
@@ -41,20 +40,48 @@ void setup()
   mpu.setThreshold(3);
 }
 
+float inDegrees( float yaw ) {
+  // Result in degrees.
+  // 0 % 360 == 0;
+  // 1 % 360 == 1;
+  // 360 % 360 == 0;
+  // 361 % 360 == 1;
+  // 720 % 360 == 0;
+  // 721 % 360 == 1;
+  // etc.
+  result = (int)yaw % 360;
+
+  if( result < 0 ) {
+    result += 360;
+  }
+  
+  return result;
+}
+
+void reset() {
+  pitch = 0;
+  roll = 0;
+  yaw = 0;
+}
+
 void loop()
 {
   // Read normalized values
   Vector norm = mpu.readNormalizeGyro();
 
+  if( Serial.read() == 'r' ) {
+    reset();
+    Serial.println(0);
+  }
+
   // Calculate Pitch, Roll and Yaw
   pitch = pitch + norm.YAxis * timeStep;
   roll = roll + norm.XAxis * timeStep;
   yaw = yaw + norm.ZAxis * timeStep;
-  float flippedYaw = yaw * -1;
-
-  result = (int)flippedYaw % 360;
   
-  Serial.println(result);
+  // Serial.println( (yaw*-1)*0.625 );
+  // Serial.print(", ");
+  Serial.println(inDegrees((yaw*-1)*0.625));
 
   delay(10);
 }

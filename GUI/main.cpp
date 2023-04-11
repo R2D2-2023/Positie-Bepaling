@@ -1,7 +1,8 @@
-#include <SFML/Graphics.HPP>
+#include <SFML/Graphics.hpp>
 #include "./lib/SimpleSerial.h"
 #include "rectangle.hpp"
 #include "text.hpp"
+#include "picture.hpp"
 #include "math.h"
 
 int main() {
@@ -12,9 +13,11 @@ int main() {
 
     sf::RenderWindow window{ sf::VideoMode{ 640, 480 }, "SFML window" };
 
-    rectangle p1( sf::Vector2f( 320, 240 ), sf::Vector2f( 100, 50 ) );
+    // rectangle p1( sf::Vector2f( 320, 240 ), sf::Vector2f( 50, 100 ) );
+    sprite a1( sf::Vector2f( 320, 240 ), sf::Vector2f( 0.5, 0.5 ), "ArrowUp.png" );
+    sprite m1( sf::Vector2f( 0, 0 ), sf::Vector2f( 1.0, 1.0 ), "testMap.png" );
     text t1( sf::Vector2f( 10, 10 ), 60 );
-    drawable * objects[] = { &p1, &t1 }; // Drawable * array en geen Drawable want reference is natuurlijk address en geen object.
+    drawable * objects[] = { &m1, &a1, &t1 }; // Drawable * array en geen Drawable want reference is natuurlijk address en geen object.
     
     if( Serial.connected_ ) {
         // Main window loop.
@@ -75,17 +78,18 @@ int main() {
                 t1.setDirection("NWN");
             }
 
-            p1.setRotation((float)reply);
+            a1.setRotation((float)reply);
             if( sf::Keyboard::isKeyPressed(sf::Keyboard::Space) ) {
-                float y_Offset = tan( reply * 3.14159265359 / 180.0 ) * 1.0;
-                if( reply > 180 ) {
-                    float y_Offset = tan( reply * 3.14159265359 / 180 ) * 1;
-                    p1.move(sf::Vector2f( ( -0.01 ), ( -y_Offset * 0.01 ) ));
-                }
-                else {
-                    float y_Offset = tan( reply * 3.14159265359 / 180 ) * 1;
-                    p1.move(sf::Vector2f( ( +0.01 ), ( y_Offset * 0.01 ) ));
-                }
+                float speed = 0.1;
+                float y_Offset = cos(reply * 3.14159265359 / 180) * 0.1;
+                float x_Offset = sin(reply * 3.14159265359 / 180) * 0.1;
+                a1.move(sf::Vector2f(x_Offset, -y_Offset));
+            }
+
+            string reply = "r";
+            if( sf::Keyboard::isKeyPressed(sf::Keyboard::R) ) {
+                Serial.WriteSerialPort(&reply[0]);
+                a1.jump(sf::Vector2f(320.0, 240.0 ));
             }
 
             // Update window.
