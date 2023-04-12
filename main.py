@@ -35,19 +35,22 @@ for i in os.listdir("images"):
     
     i[thesh == 128] = (255,255,255)
 
-    image2 = i
-    cropped = image2[90:280, 150:330]
-    print(image2.shape[+1::-1])
-    w,h = image2.shape[+1::-1]
-
-    res = cv.matchTemplate(image1,image2,cv.TM_CCOEFF_NORMED)
-    threshold = 0.5
-    loc = np.where( res>=threshold)
-    for pt in zip(*loc[::1]):
-        print(pt)
-        cv.rectangle(image1, pt, (pt[0] +w, pt[1] +h), (0,0,255), 2)
-        break
-
-    cv.imshow('res.png', image1)
-    cv.imshow('search.png', image2)
+    cv.imshow("i", i)
     cv.waitKey(0)
+
+    # image2 = i
+    # cropped = image2[90:280, 150:330]
+    # print(image2.shape[+1::-1])
+    # w,h = image2.shape[+1::-1]
+
+    # res = cv.matchTemplate(image1,image2,cv.TM_CCOEFF_NORMED)
+    # threshold = 0.5
+    # loc = np.where( res>=threshold)
+    # for pt in zip(*loc[::1]):
+    #     print(pt)
+    #     cv.rectangle(image1, pt, (pt[0] +w, pt[1] +h), (0,0,255), 2)
+    #     break
+
+    # cv.imshow('res.png', image1)
+    # cv.imshow('search.png', image2)
+    # cv.waitKey(0)
