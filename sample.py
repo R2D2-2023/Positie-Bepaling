@@ -28,22 +28,32 @@ for i in range(22):
         lijst.extend(measures)
         # measures=[]    
     time.sleep(0.015)
+lidar.close()
 
 # print(lijst)
 # print(len(lijst))
+
+distance=[]
+degrees=[]
 img = numpy.ones((480, 640))
-lidar.close()
 for i in lijst:
     x=str(i).split(":")    
-    degree=float(x[0])
-    distance=float(x[1].split("mm")[0])
-    print(f"afstand is {distance} en degree is {degree} \n")
-    img = cv2.circle(img, calcPos(640, 480, degree, distance), 1, (0, 0, 0), 2)
+    degrees.append(float(x[0]))
+    distance.append(float(x[1].split("mm")[0]))
+    # print(f"afstand is {distance} en degree is {degrees[]} \n")
+# print(degrees)
+# print(distance)
+for i in range(0, len(distance)-1):
+    distance[i] = distance[i] / max(distance)
+
+
+for i in range(0, len(degrees)-1):
+    img = cv2.circle(img, calcPos(640, 480, degrees[i], distance[i]), 1, (0, 0, 0), 2)
 
 cv2.imshow("Image", img)
 cv2.waitKey(0)
 
-print(degree)
-print(distance)
-print(img)
+# print(degrees)
+# print(distance)
+# print(img)
 
