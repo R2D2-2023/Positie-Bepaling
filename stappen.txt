@@ -1,0 +1,5 @@
+map opsplitsen in 4 delen (noord, oost, zuid, west)
+gebied pakken van gyro data
+lidar locatie pakken
+uitrekenen waar de positie precies is
+op de grid kijken waar dit past
