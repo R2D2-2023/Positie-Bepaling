@@ -11,7 +11,7 @@ def calcPos(posX, posY, rotation, distance):
     posX += x_Offset
     posY += -y_Offset
     return (int(posX)-320, int(posY)-240)
-
+count=0
 while True:
     if not lidar.open():
         print("Cannot open lidar")
@@ -36,4 +36,10 @@ while True:
     for i in range(0, len(degrees)-1):
         img = cv2.circle(img, calcPos(640, 480, degrees[i], distance[i]), 1, (0, 0, 0), 2)
     cv2.imshow("Image", img)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        count+=1
+        # for i in img:
+            # print(i)
+        cv2.imwrite("test_pictures"+'/'+str(count)+".png",255*img)
+
     cv2.waitKey(1)
