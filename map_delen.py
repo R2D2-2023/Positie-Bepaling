@@ -20,8 +20,7 @@ assert template is not None, "file could not be read, check with os.path.exists(
 w, h = template.shape[::-1]
 
 # All the 6 methods for comparison in a list
-methods = ['cv.TM_CCOEFF', 'cv.TM_CCOEFF_NORMED', 'cv.TM_CCORR',
-           'cv.TM_CCORR_NORMED', 'cv.TM_SQDIFF', 'cv.TM_SQDIFF_NORMED']
+methods = ['cv.TM_CCOEFF_NORMED','cv.TM_CCORR_NORMED']
 
 threshold = 0.5
 
@@ -31,11 +30,31 @@ for rotation in range(0, 360, 180):
         img = img2.copy()
         method = eval(meth)
         # Apply template Matching
-        res = cv.matchTemplate(img, rotated_template, cv.TM_CCOEFF_NORMED)
+        res = cv.matchTemplate(img, rotated_template, method)
+        amount = 0 # of matches
+        step = 10
+        threshold = 0.1 #
+        loc = []
+        cycles = 0
+        while(amount < 1 or amount > 1): #aslong as amount is above or beneath 1
+            loc = np.where( res>=threshold ) #look where the image matches the map
+            amount = len(loc[0]) #store how many are matching
+            if amount < 1:
+                threshold -= step
+            elif amount > 1:
+                threshold += step
+            step *= 0.9
+            cycles +=1
+            if cycles > 100:
+                break
+
+
+
+
         loc = np.where(res >= threshold)
         for pt in zip(*loc[::-1]):
             cv.rectangle(img, pt, (pt[0] + w, pt[1] + h), (0, 0, 255), 2)
-        
-plt.imshow(img, cmap='gray')
-plt.title('Detected Point')
-plt.show()
+        print(meth)
+        plt.imshow(img, cmap='gray')
+        plt.title('Detected Point')
+        plt.show()
