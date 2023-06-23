@@ -58,7 +58,7 @@ while lidar.open():
     if cv2.waitKey(1) & 0xFF == ord('q'):
         count+=1
         img = cv2.resize(img, (90,90))
-        cv2.imwrite("test_pictures"+'/'+str(count)+".png",255*img)
+        cv2.imwrite("rechtsonder"+'/'+str(count)+".png",255*img)
 
     if cv2.waitKey(1) & 0xFF == ord('e'):
         resized = cv2.resize(img, (90,90))
