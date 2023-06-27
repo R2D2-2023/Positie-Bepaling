@@ -130,6 +130,7 @@ while lidar.open():
     # axs[1].clear()
     # axs[1].imshow( img, cmap='gray' )
     # plt.show()
+    # image_map = cv2.resize(img_map, (int(img_map.shape[1] * 0.5), int(img_map.shape[0] * 0.5)))
 
     cv2.imshow("LIDAR Image", img)
     cv2.imshow("Check Image", img_map)
