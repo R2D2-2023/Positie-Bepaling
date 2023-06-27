@@ -1,53 +1,44 @@
-/*
-    MPU6050 Triple Axis Gyroscope & Accelerometer. Pitch & Roll & Yaw Gyroscope Example.
-    Read more: http://www.jarzebski.pl/arduino/czujniki-i-sensory/3-osiowy-zyroskop-i-akcelerometr-mpu6050.html
-    GIT: https://github.com/jarzebski/Arduino-MPU6050
-    Web: http://www.jarzebski.pl
-    (c) 2014 by Korneliusz Jarzebski
-*/
-
 #include <Wire.h>
 #include <MPU6050.h>
 #include <math.h>
 
-MPU6050 mpu;
+MPU6050 mpu; // Maak nieuw MPU opbject aan.
 
-// Timers
-float timeStep = 0.01;
+// Timers, gebruikt om snelheid van gyro over tijd te bepalen (aanpassen bij andere delays).
+float timeStep = 0.01; // Zet de timer.
 
-// Pitch, Roll and Yaw values
-float pitch = 0.0;
-float roll = 0.0;
-float yaw = 0.0;
-float result = 0.0;
-double posX = 320.0;
-double posY = 240.0;
-double angle = 0.0;
-bool moving = false;
-float calibration_number = 1.125;
-double speed = 0.03;
-const int buttonPin = 7;
-int loops;
+// Alle standaard waardes instellen.
+float pitch = 0.0; // Rotatie X-as.
+float roll = 0.0; // Rotatie Y-as.
+float yaw = 0.0; // Rotatie Z-as.
+float result = 0.0; // Gyro waarde omgezet naar graden.
+double posX = 320.0; // X-positie op de map.
+double posY = 240.0; // Y-positie van de map.
+double angle = 0.0; // Gyro waarde in graden.
+bool moving = false; // Bool voor als de gyro beweegt.
+float calibration_number = 1.125; // Kalibratiegetal voor gyro.
+double speed = 0.03; // Standaard snelheid robot.
+const int buttonPin = 7; // Pin voor test knop om rijden te simuleren.
+int loops; // Aantal loops dat gyro data is geüpdated.
 
+// Setup code.
 void setup() 
 {
-  Serial.begin(9600);
+  Serial.begin(9600); // Begin serial monitor.
 
-  pinMode(buttonPin, INPUT);
+  pinMode(buttonPin, INPUT); // Stel rij knop in.
 
-  // Initialize MPU6050
+  // Initialiseer de gyro sensor.
   while(!mpu.begin(MPU6050_SCALE_2000DPS, MPU6050_RANGE_2G))
   {
     Serial.println("Could not find a valid MPU6050 sensor, check wiring!");
     delay(500);
   }
   
-  // Calibrate gyroscope. The calibration must be at rest.
-  // If you don't want calibrate, comment this line.
+  // Calibreer gyro om drift te voorkomen.
   mpu.calibrateGyro();
 
-  // Set threshold sensivty. Default 3.
-  // If you don't want use threshold, comment this line or set 0.
+  // Stel de sensitiviteit van de gyro in.
   mpu.setThreshold(3);
 }
 
@@ -69,71 +60,99 @@ float inDegrees( float yaw ) {
   return result;
 }
 
+// Reset alle waarden naar de standaard waarden.
 void reset() {
-  pitch = 0;
-  roll = 0;
-  yaw = 0;
-  posX = 320;
-  posY = 240;
+  pitch = 0; // Reset X-as.
+  roll = 0; // Reset Y-as.
+  yaw = 0; // Reset Z-as.
+  posX = 320; // Reset X positie.
+  posY = 240; // Reset Y positie.
 }
 
+// Update de positie van de gyro.
 void updatePosition( float rotation ) {
-    double y_Offset = cos(rotation * 3.14159265359 / 180) * speed;
-    double x_Offset = sin(rotation * 3.14159265359 / 180) * speed;
-    posX += x_Offset;
-    posY += -y_Offset;
+    double y_Offset = cos(rotation * 3.14159265359 / 180) * speed; // Bereken de Y offset van het middenpunt van de gyro op basis van de angle van de gyro.
+    double x_Offset = sin(rotation * 3.14159265359 / 180) * speed;// Bereken de X offset van het middenpunt van de gyro op basis van de angle van de gyro.
+    posX += x_Offset; // Update de X positie.
+    posY += -y_Offset;// Update de Y positie.
 }
 
+// Stuur de positie data via de serial monitor.
 void sendPosition() {
-  Serial.print((int)posX);
+  Serial.print((int)posX); // Stuur de X positie via serial.
   Serial.print(',');
-  Serial.print((int)posY);
+  Serial.print((int)posY); // Stuur de Y positie via serial.
   Serial.print(',');
-  Serial.println((int)angle);
+  Serial.println((int)angle); // Stuur de angle via serial.
 }
 
+// Stuur de rauwe Yaw data via de serial monitor.
 void sendYaw() {
-  Serial.println(yaw);
+  Serial.println(yaw); // Stuur de yaw waarde.
 }
 
+// Stuur de angle waarde die de geconverteerde Yaw waarde naar 0-360 graden is.
 void sendAngle() {
   Serial.println(angle);
 }
 
+// Stuur een kompas waarde op basis van de angle waarde.
+void sendCompass( float rotation ) {
+    if( angle < 45 || angle > 315 ) { // Kijk of de angle naar het noorden wijst.
+      Serial.println("N"); // Stuur de letter N via de serial monitor.
+    }
+    else if(angle > 45 && angle < 135 ) { // Kijk of de angle naar het oosten wijst.
+      Serial.println("E"); // Stuur de letter E via de serial monitor.
+    }
+    else if(angle > 135 && angle < 225 ) { // Kijk of de angle naar het zuiden wijst.
+      Serial.println("S"); // Stuur de letter S via de serial monitor.
+    }
+    else if(angle > 225 && angle < 315 ) { // Kijk of de angle naar het westen wijst.
+      Serial.println("W"); // Stuur de letter W via de serial monitor.
+    }
+}
+
 void updateRotation() {
-  // Read normalized values
+  // Vraag de mpu waardes op en geef ze genormaliseerd terug.
   Vector norm = mpu.readNormalizeGyro();
 
-  // Calculate Pitch, Roll and Yaw
-  pitch = pitch + norm.YAxis * timeStep;
-  roll = roll + norm.XAxis * timeStep;
-  yaw = yaw + norm.ZAxis * timeStep;
+  // Bereken de Pitch, Roll en Yaw (X, Y en Z) waarden op basis van de draaisnelheid van de sensor en de timestep waarde.
+  pitch = pitch + norm.YAxis * timeStep; // Bereken de pitch (X).
+  roll = roll + norm.XAxis * timeStep; // Bereken de pitch (Y).
+  yaw = yaw + norm.ZAxis * timeStep; // Bereken de pitch (Z).
     
   // Serial.println( (yaw*-1)*0.625 );
   // Serial.print(", ");
   // Serial.println(inDegrees((yaw*-1)*0.625));
 
-  angle = inDegrees((yaw*-1)*calibration_number);
+  angle = inDegrees((yaw*-1)*calibration_number); // Geef de geïnverteerde Yaw waarde mee aan de inDegrees functie om 0-360 graden terug te krijgen en dit in de angle waarde te zetten.
   // Move(angle);
 }
 
+// Vraag positie data op.
 double getPosition() {
   return posX, posY, angle;
 }
 
+// Main loop.
 void loop()
 {
-  updateRotation();
+  updateRotation(); // Vraag nieuwe rotatie waarden op van de gyro sensor.
 
+  // Check of de rij knop wordt ingedrukt.
   if( digitalRead(buttonPin) == HIGH ){
     updatePosition(angle);
   }
 
-  if( loops == 50 ) {
-    sendPosition();
-    loops = 0;
+  // Check of er 10 update loops (100ms) voorbij zijn gegaan.
+  if( loops == 10 ) {
+    // sendPosition();
+    // sendAngle();
+    sendCompass(angle); // Stuur de kompas waarden.
+    loops = 0; // Zet de loops weer terug naar 0.
   }
 
+  // Update de loops.
   loops += 1;
-  delay(10);
+  delay(10); // Wacht 10 ms met updaten.
 }
