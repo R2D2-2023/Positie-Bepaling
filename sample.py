@@ -57,7 +57,7 @@ while lidar.open():
         img = cv2.line(img, (300, 300), calcPos(600, 600, degrees[i], distance[i]), (1, 1, 1), 3)
         img = cv2.circle(img, calcPos(600, 600, degrees[i], distance[i]), 1, (0, 0, 0), 4)
 
-    img_map = cv2.imread('./Map_West.png', cv2.IMREAD_GRAYSCALE)
+    img_map = cv2.imread('./Map_West3.png', cv2.IMREAD_GRAYSCALE)
     assert img_map is not None, "file could not be read, check with os.path.exists()"
     img2 = img_map.copy()
 
@@ -141,7 +141,7 @@ while lidar.open():
     if cv2.waitKey(1) & 0xFF == ord('q'):
         count+=1
         img = cv2.resize(img, (90,90))
-        cv2.imwrite("rechtsonder"+'/'+str(count)+".png",255*img)
+        cv2.imwrite(rechtsonder"+'/'+str(count)+".png",255*img)
 
     if cv2.waitKey(1) & 0xFF == ord('e'):
         resized = cv2.resize(img, (90,90))
