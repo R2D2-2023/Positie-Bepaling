@@ -76,6 +76,8 @@ def scale_image(origImg):
 
     return origImg
 
+
+
 image_scaled = scale_image(image_og)
 
 image, x, y = get_roi(image_scaled)
@@ -87,15 +89,15 @@ dot_y = 450 + x[1]
 print(dot_x)
 print(dot_y)
 # Draw a dot on the image
-cv2.circle(image_og, (dot_x, dot_y), radius=2, color=(255, 0, 0), thickness=-1)
+cv2.circle(image_scaled, (dot_x, dot_y), radius=2, color=(255, 0, 0), thickness=-1)
 
-cv2.rectangle(image_scaled, x, y, (0,0,255), thickness=1)
-# cv2.circle(image_scaled, (dot_x, dot_y), radius=5)
+# cv2.rectangle(image_scaled, x, y, (0,0,255), thickness=1)
 
 # Display the image with the dot
 if (os.path.exists('location.png')):
     os.remove('location.png')
 cv2.imshow('location.png', image_scaled)
+cv2.imwrite('location.png', image_scaled)
 cv2.moveWindow('location.png', 50, 50)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
