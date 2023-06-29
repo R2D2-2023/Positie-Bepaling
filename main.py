@@ -7,7 +7,7 @@ import argparse
 from matplotlib import pyplot as plt
 
 count=16
-lidar = LidarX2("/dev/ttyUSB0")  # Name of the serial port, can be /dev/tty*, COM*, etc.
+lidar = LidarX2("COM3")  # Name of the serial port, can be /dev/tty*, COM*, etc.
 def calcPos(posX, posY, rotation, distance):
     y_Offset = math.cos(rotation * 3.14159265359 / 180) * (distance*200)
     x_Offset = math.sin(rotation * 3.14159265359 / 180) * (distance*200)
