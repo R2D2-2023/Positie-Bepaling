@@ -63,18 +63,20 @@ mapDimensions = img_map.shape
 # print("done contrast")
 
 if( args.MapSide == "N"):
-    img_map = cv2.imread('./Mappen_zijdes/Map_Noord.png', cv2.IMREAD_GRAYSCALE)
+    img_map = cv2.imread('./Mappen_zijdes/Map_Noord1.png', cv2.IMREAD_GRAYSCALE)
     img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
 elif( args.MapSide == "E"):
     img_map = cv2.imread('./Mappen_zijdes/Map_Oost1.png', cv2.IMREAD_GRAYSCALE)
     img_map = cv2.resize(img_map, (100,img_map.shape[0]))
 elif( args.MapSide == "S"):
-    img_map = cv2.imread('./Mappen_zijdes/Map_Zuid3.png', cv2.IMREAD_GRAYSCALE)
+    img_map = cv2.imread('./Mappen_zijdes/Map_Zuid4.png', cv2.IMREAD_GRAYSCALE)
     img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
 elif( args.MapSide == "W"):
     img_map = cv2.imread('./Mappen_zijdes/Map_West.png', cv2.IMREAD_GRAYSCALE)
     img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
     img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
+    img_map = cv2.resize(img_map, (100,img_map.shape[0]))
+
 
 
 mapDimensions = img_map.shape
@@ -82,7 +84,7 @@ mapDimensions = img_map.shape
 
 for x in range(mapDimensions[0]):
     for y in range(mapDimensions[1]):
-        if img_map[x][y] < 50:
+        if img_map[x][y] < 100:
             img_map[x][y] = 0
         else:
             img_map[x][y] = 255    
@@ -117,13 +119,13 @@ while lidar.open():
 
     for i in range(0, len(degrees)-1):
         if distance[i]>0:
-            # img = cv2.line(img, (300, 300), calcPos(600, 600, degrees[i], distance[i]), (1, 1, 1), 3)       
+            img = cv2.line(img, (300, 300), calcPos(600, 600, degrees[i], distance[i]), (1, 1, 1), 3)       
             img = cv2.circle(img, calcPos(600, 600, degrees[i], distance[i]), 1, (0, 0, 0), 5)
     
 
     #this chooses which map to use for the matching
     
-    img = cv2.resize(img, (100,200))
+    img = cv2.resize(img, (100,200)) #-------------------------------------------------------------------------------------------------------------------------------
     uint_img = np.array(img*255).astype('uint8')
     template = uint_img.copy()
    

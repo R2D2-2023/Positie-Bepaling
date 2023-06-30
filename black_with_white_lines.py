@@ -52,7 +52,7 @@ args = parser.parse_args()
 
 
 lijst=[]
-
+count=0
 lastPos = (0,0)
 img_map = cv2.imread("./Mappen_zijdes/Map_Zuid3.png", cv2.IMREAD_GRAYSCALE)
 img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
@@ -63,19 +63,19 @@ mapDimensions = img_map.shape
 # print("done contrast")
 
 if( args.MapSide == "N"):
-    img_map = cv2.imread('./Mappen_zijdes/Map_Noord.png', cv2.IMREAD_GRAYSCALE)
+    img_map = cv2.imread('./Mappen_zijdes/Map_Noord1.png', cv2.IMREAD_GRAYSCALE)
     img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
 elif( args.MapSide == "E"):
     img_map = cv2.imread('./Mappen_zijdes/Map_Oost1.png', cv2.IMREAD_GRAYSCALE)
     img_map = cv2.resize(img_map, (100,img_map.shape[0]))
 elif( args.MapSide == "S"):
-    img_map = cv2.imread('./Mappen_zijdes/Map_Zuid3.png', cv2.IMREAD_GRAYSCALE)
+    img_map = cv2.imread('./Mappen_zijdes/Map_Zuid4.png', cv2.IMREAD_GRAYSCALE)
     img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
 elif( args.MapSide == "W"):
-    img_map = cv2.imread('./Mappen_zijdes/Map_West.png', cv2.IMREAD_GRAYSCALE)
+    img_map = cv2.imread('./Mappen_zijdes/Map_West1.png', cv2.IMREAD_GRAYSCALE)
     img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
     img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
-
+    img_map = cv2.resize(img_map, (100,img_map.shape[0]))
 
 mapDimensions = img_map.shape
 
@@ -123,7 +123,7 @@ while lidar.open():
 
     #this chooses which map to use for the matching
     
-    img = cv2.resize(img, (100,200))
+    img = cv2.resize(img, (200,200)) #----------------------------------------------------------------------------------------------------------------------
     uint_img = np.array(img*255).astype('uint8')
     template = uint_img.copy()
    
@@ -138,7 +138,7 @@ while lidar.open():
 
     assert template is not None, "file could not be read, check with os.path.exists()"
     w, h = template.shape[::-1]
-    res = cv2.matchTemplate(img_map, template, cv2.TM_CCOEFF_NORMED)
+    res = cv2.matchTemplate(img_map, template, cv2.TM_CCOEFF) #TM_CCOEFF_NORMED
     loc = np.where(res == np.max(res))
   
     img_map_cpy = img_map.copy()
@@ -154,4 +154,10 @@ while lidar.open():
     # img_rotated = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
 
     cv2.imshow("Check Image", img_map_cpy)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        count+=1
+        # img = cv2.resize(img, (90,90))
+        cv2.imwrite('./Zuid'+str(count)+".png",255*img)
+
     cv2.waitKey(1)
