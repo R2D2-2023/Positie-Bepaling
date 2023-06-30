@@ -98,6 +98,6 @@ if (os.path.exists('location.png')):
     os.remove('location.png')
 cv2.imshow('location.png', image_scaled)
 cv2.imwrite('location.png', image_scaled)
-cv2.moveWindow('location.png', 50, 50)
+# cv2.moveWindow('location.png', 50, 50)
 cv2.waitKey(0)
 cv2.destroyAllWindows()

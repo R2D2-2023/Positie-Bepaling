@@ -40,14 +40,42 @@ def GetPosition(location_map):
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     if contours:
-        largest_contour = max(contours, key=cv2.contourArea)
+       largest_contour = max(contours, key=cv2.contourArea)
 
-        M = cv2.moments(largest_contour)
-        centroid_x = int(M["m10"] / M["m00"])
-        centroid_y = int(M["m01"] / M["m00"])
+       M = cv2.moments(largest_contour)
+       centroid_x = int(M["m10"] / M["m00"])
+       centroid_y = int(M["m01"] / M["m00"])
 
     return centroid_x, centroid_y
 
+def updateGridImage(matrix, data):
+    grid_color = (0, 0, 255)
+    grid_color_green = (0, 255, 0)
+    grid_color_checkpoint = (255, 0, 255)
+    grid_color_corner = (255, 255, 0)
+    grid_img = data.M_Data.orig_Img.copy()
+    cell_size = data.M_Data.cell_size
+
+    for i in range(len(matrix)):
+        y = data.G_Data.begin_Y + i * cell_size
+        for j in range(len(matrix[i])):
+            x = data.G_Data.begin_X + j * cell_size
+            value = matrix[i][j]
+            rect_color = None
+            if value == 0:
+                rect_color = grid_color
+            elif value == 6000:
+                rect_color = grid_color_corner
+            elif value == 1000:
+                rect_color = (255, 0, 0)
+            else:
+                if value < 0:
+                    rect_color = grid_color_checkpoint
+                else:
+                    rect_color = grid_color_green
+            cv2.rectangle(grid_img, (x, y), (x + cell_size, y + cell_size), rect_color, 1 if value == 0 else -1)
+    
+    cv2.imshow("Grid Image", grid_img)
 
 def readTxt(filename):
     # Read the contents of the text file
@@ -142,9 +170,10 @@ def makeGridCoords(pixel_x, pixel_y, data, matrix):
     data.M_Data.before = grid_cell_coordinates
     
     matrix[grid_cell_coordinates[0]][grid_cell_coordinates[1]] = 1000
-    
+    updateGridImage(matrix, data)
     
     return grid_cell_coordinates
+
 
 def loadArray(arr1, arr2, arr3, matrix, u_Data):
     c1 = 1
@@ -164,7 +193,7 @@ def loadArray(arr1, arr2, arr3, matrix, u_Data):
         x, y = map(int, cell.split("/"))
         matrix[x][y] = 6000
     
-    
+    updateGridImage(matrix, u_Data)
 
 
 def createGridImage(filename):
@@ -191,6 +220,8 @@ def createGridImage(filename):
     posX = (screenWidth - scaledWidth) // 2
     posY = (screenHeight - scaledHeight) // 2
 
+    cv2.namedWindow("Grid Image")
+    cv2.moveWindow("Grid Image", posX, posY)
     orig_Img = cv2.resize(orig_Img, (scaledWidth, scaledHeight))
     
     
@@ -206,7 +237,7 @@ def createGridImage(filename):
 
     matrix, u_Data = setData(img, begin, end, orig_Img)
     
-    
+    updateGridImage(matrix, u_Data)
     
     arr1, arr2, arr3 = readTxt("arrays.txt")
     loadArray(arr1, arr2, arr3, matrix, u_Data)
@@ -214,13 +245,15 @@ def createGridImage(filename):
     grid_coordinates = makeGridCoords(pixel[1], pixel[0], u_Data, matrix)
     print(grid_coordinates)
     
-    
+    cv2.waitKey(0)
     
     return matrix
 
 
 def main():
+    # coords = open("coords.txt", "r").readlines()
     matrix = createGridImage("map_new_new_edited.png")
+
 
 if __name__ == '__main__':
     main()
