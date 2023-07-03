@@ -36,56 +36,56 @@ def rotateImage(image, angle):
         return new_image
 
 
-def ParseLocation(inputText):
-    try:
-        x, y = map(int, inputText.split(','))
-        return x, y
-    except:
-        raise argparse.ArgumentTypeError("Input format must be 'x, y'")
+# def ParseLocation(inputText):
+#     try:
+#         x, y = map(int, inputText.split(','))
+#         return x, y
+#     except:
+#         raise argparse.ArgumentTypeError("Input format must be 'x, y'")
 
+# 
+# parser = argparse.ArgumentParser()
+# parser.add_argument('MapSide')
+# parser.add_argument('-c,--previous-coordinates', type=ParseLocation, nargs=2)
 
-parser = argparse.ArgumentParser()
-parser.add_argument('MapSide')
-parser.add_argument('-c,--previous-coordinates', type=ParseLocation, nargs=2)
-
-args = parser.parse_args()
+# args = parser.parse_args()
 
 
 lijst=[]
 count=0
 lastPos = (0,0)
-img_map = cv2.imread("./Mappen_zijdes/Map_Zuid3.png", cv2.IMREAD_GRAYSCALE)
-img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
+img_map = cv2.imread("./Mappen_zijdes/full_map.png", cv2.IMREAD_GRAYSCALE)
+# img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
 mapDimensions = img_map.shape
 # img_map = cv2.resize(img_map, (int(mapDimensions[0]/2),int(mapDimensions[1]/2)))
 
 
 # print("done contrast")
 
-if( args.MapSide == "N"):
-    img_map = cv2.imread('./Mappen_zijdes/Map_Noord1.png', cv2.IMREAD_GRAYSCALE)
-    img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
-elif( args.MapSide == "E"):
-    img_map = cv2.imread('./Mappen_zijdes/Map_Oost1.png', cv2.IMREAD_GRAYSCALE)
-    img_map = cv2.resize(img_map, (100,img_map.shape[0]))
-elif( args.MapSide == "S"):
-    img_map = cv2.imread('./Mappen_zijdes/Map_Zuid4.png', cv2.IMREAD_GRAYSCALE)
-    img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
-elif( args.MapSide == "W"):
-    img_map = cv2.imread('./Mappen_zijdes/Map_West1.png', cv2.IMREAD_GRAYSCALE)
-    img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
-    img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
-    img_map = cv2.resize(img_map, (100,img_map.shape[0]))
+# if( args.MapSide == "N"):
+#     img_map = cv2.imread('./Mappen_zijdes/Map_Noord1.png', cv2.IMREAD_GRAYSCALE)
+#     img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
+# elif( args.MapSide == "E"):
+#     img_map = cv2.imread('./Mappen_zijdes/Map_Oost1.png', cv2.IMREAD_GRAYSCALE)
+#     img_map = cv2.resize(img_map, (100,img_map.shape[0]))
+# elif( args.MapSide == "S"):
+#     img_map = cv2.imread('./Mappen_zijdes/Map_Zuid4.png', cv2.IMREAD_GRAYSCALE)
+#     img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
+# elif( args.MapSide == "W"):
+#     img_map = cv2.imread('./Mappen_zijdes/Map_West1.png', cv2.IMREAD_GRAYSCALE)
+#     img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
+#     img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
+#     img_map = cv2.resize(img_map, (100,img_map.shape[0]))
 
 mapDimensions = img_map.shape
 
 
-for x in range(mapDimensions[0]):
-    for y in range(mapDimensions[1]):
-        if img_map[x][y] < 50:
-            img_map[x][y] = 255
-        else:
-            img_map[x][y] = 0    
+# for x in range(mapDimensions[0]):
+#     for y in range(mapDimensions[1]):
+#         if img_map[x][y] < 50:
+#             img_map[x][y] = 255
+#         else:
+#             img_map[x][y] = 0    
 
 
 
@@ -158,6 +158,6 @@ while lidar.open():
     if cv2.waitKey(1) & 0xFF == ord('q'):
         count+=1
         # img = cv2.resize(img, (90,90))
-        cv2.imwrite('./Zuid'+str(count)+".png",255*img)
+        cv2.imwrite('./Midden'+str(count)+".png",255*img)
 
     cv2.waitKey(1)
