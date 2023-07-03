@@ -51,7 +51,7 @@ mapDimensions = img_map.shape
 print("done contrast")
 
 
-map_oost=cv2.imread('./mappen_zijdes/Mapping_map_east.png',cv2.IMREAD_GRAYSCALE)
+map_oost=cv2.imread('./mappen_zijdes/Mapping_map_oost.png',cv2.IMREAD_GRAYSCALE)
 
 if( args.MapSide == "N"):
     img_map = cv2.imread('./Mappen_zijdes/North_side.png', cv2.IMREAD_GRAYSCALE)

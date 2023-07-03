@@ -55,9 +55,7 @@ lijst=[]
 count=0
 lastPos = (0,0)
 img_map = cv2.imread("./Mappen_zijdes/Nieuwe_Map2.png", cv2.IMREAD_GRAYSCALE)
-# img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
 mapDimensions = img_map.shape
-# img_map = cv2.resize(img_map, (int(mapDimensions[0]/2),int(mapDimensions[1]/2)))
 
 
 
@@ -65,34 +63,21 @@ if( args.MapSide == "N"):
     img_map = cv2.imread('./Mappen_zijdes/North_side.png', cv2.IMREAD_GRAYSCALE)
     map=cv2.imread('./mappen_zijdes/Mapping_map_noord.png', cv2.IMREAD_GRAYSCALE)
 
-    # img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
 elif( args.MapSide == "E"):
     img_map = cv2.imread('./Mappen_zijdes/East_side.png', cv2.IMREAD_GRAYSCALE)
     map=cv2.imread('./mappen_zijdes/Mapping_map_east.png', cv2.IMREAD_GRAYSCALE)
 
-    # img_map = cv2.resize(img_map, (100,img_map.shape[0]))
 elif( args.MapSide == "S"):
     img_map = cv2.imread('./Mappen_zijdes/South_side.png', cv2.IMREAD_GRAYSCALE)
     map=cv2.imread('./mappen_zijdes/Mapping_map_zuid.png', cv2.IMREAD_GRAYSCALE)
 
-    # img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
 elif( args.MapSide == "W"):
     img_map = cv2.imread('./Mappen_zijdes/West_side.png', cv2.IMREAD_GRAYSCALE)
     map=cv2.imread('./mappen_zijdes/Mapping_map_west.png', cv2.IMREAD_GRAYSCALE)
 
-    # img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
-    # img_map = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
-    # img_map = cv2.resize(img_map, (100,img_map.shape[0]))
-
-mapDimensions = img_map.shape
 
 
-# for x in range(mapDimensions[0]):
-#     for y in range(mapDimensions[1]):
-#         if img_map[x][y] < 50:
-#             img_map[x][y] = 255
-#         else:
-#             img_map[x][y] = 0    
+
 
 
 
@@ -149,25 +134,20 @@ while lidar.open():
     loc = np.where(res == np.max(res))
   
     img_map_cpy = map.copy()
-    # print(threshold)        
     for pt in zip(*loc[::-1]):
         cv2.rectangle(img_map_cpy, pt, (pt[0] + w, pt[1] + h), (255, 0, 0), 2)
         x=int(round(pt[0]+(w/2)))
         y=int(round(pt[1]+(h/2)))
         cv2.circle(img_map_cpy, (x,y),2, (255, 0, 0), 4)
     lastPos = pt
-    # If statement vorige code terug zetten.
 
 
-    # img = cv2.rotate(template, cv2.ROTATE_90_CLOCKWISE)
     cv2.imshow("LIDAR Image", template)
-    # img_rotated = cv2.rotate(img_map, cv2.ROTATE_90_CLOCKWISE)
 
     cv2.imshow("Check Image", img_map_cpy)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         count+=1
-        # img = cv2.resize(img, (90,90))
         cv2.imwrite('./Midden'+str(count)+".png",255*img)
 
     cv2.waitKey(1)
