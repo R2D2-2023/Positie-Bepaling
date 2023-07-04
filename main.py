@@ -5,9 +5,28 @@ from win32api import GetSystemMetrics
 from Library import LidarX2
 import time
 import math
+import serial
+
 
 class MouseData:
+    """!
+    @brief [Description de la classe]
+
+
+    """
+    """!
+    @brief [Description of the class]
+
+
+    """
     def __init__(self):
+        """!
+        @brief [Description of the function]
+
+        Paramètres : 
+            @param self => initialization parameter
+
+        """
         self.matrix = None
         self.cell_size = 0
         self.img = None
@@ -17,20 +36,55 @@ class MouseData:
         self.before = None
 
 class GridData:
+    """!
+    @brief [Description of the class]
+
+
+    """
+
     def __init__(self):
+        """!
+        @brief [Description of the function]
+
+        Paramètres : 
+            @param self => initialization parameter
+
+        """
         self.begin_X = 0
         self.begin_Y = 0
         self.start = 0
         self.end = 0
 
 class StoreData:
+    """!
+    @brief [Description of the class]
+
+
+    """
     def __init__(self):
+        """!
+        @brief [Description of the function]
+
+        Paramètres : 
+            @param self => initialization parameter
+
+        """
         self.G_Data = GridData()
         self.M_Data = MouseData()
 
  # Name of the serial port, can be /dev/tty*, COM*, etc.
 
 def calcPos(posX, posY, rotation, distance):
+    """!
+    @brief [Description of the function]
+
+    Paramètres : 
+        @param posX => [description]
+        @param posY => [description]
+        @param rotation => [description]
+        @param distance => [description]
+
+    """
     y_Offset = math.cos(rotation * 3.14159265359 / 180) * (distance*200)
     x_Offset = math.sin(rotation * 3.14159265359 / 180) * (distance*200)
     posX += x_Offset
@@ -38,6 +92,13 @@ def calcPos(posX, posY, rotation, distance):
     return (int(posX)-300, int(posY)-300)
 
 def listSplitter(list):
+    """!
+    @brief [Description of the function]
+
+    Paramètres : 
+        @param list => list of the distance and degrees measured with the lidar
+
+    """
     distance=[]
     degrees=[]
     for i in list:
@@ -48,13 +109,28 @@ def listSplitter(list):
     return degrees, distance
 
 def rotateImage(image, angle):  
-        row, col = image.shape
-        center = tuple(np.array([col, row]) / 2)  # Corrected order of dimensions
-        rot_mat = cv2.getRotationMatrix2D(center, angle, 1.0)
-        new_image = cv2.warpAffine(image, rot_mat, (col, row))
-        return new_image
+    """!
+    @brief [Description of the function]
+
+    Paramètres : 
+        @param image => image to rotate
+        @param angle => angle of rotation
+
+    """
+    row, col = image.shape
+    center = tuple(np.array([col, row]) / 2)  # Corrected order of dimensions
+    rot_mat = cv2.getRotationMatrix2D(center, angle, 1.0)
+    new_image = cv2.warpAffine(image, rot_mat, (col, row))
+    return new_image
 
 def GetPosition(location_map):
+    """!
+    @brief [Description of the function]
+
+    Paramètres : 
+        @param location_map => map with the current position of the car
+
+    """
     img = cv2.imread(location_map)
     if img is None:
         print("No image to search")
@@ -79,6 +155,13 @@ def GetPosition(location_map):
     return centroid_x, centroid_y
 
 def readTxt(filename):
+    """!
+    @brief [Description of the function]
+
+    Paramètres : 
+        @param filename => file with key points on the grid
+
+    """
     # Read the contents of the text file
     with open(filename, "r") as file:
         data = file.read()
@@ -92,6 +175,16 @@ def readTxt(filename):
     return array1, array2, array3
 
 def setData(img, begin, end, orig_Img):
+    """!
+    @brief [Description of the function]
+
+    Paramètres : 
+        @param img => [description]
+        @param begin => [description]
+        @param end => [description]
+        @param orig_Img => [description]
+
+    """
     longest_dim = max(img.shape[1], img.shape[0])
     cell_size = int(np.ceil(longest_dim / 300))
 
@@ -117,6 +210,13 @@ def setData(img, begin, end, orig_Img):
     return matrix, u_Data
 
 def getRoi(img):
+    """!
+    @brief [Description of the function]
+
+    Paramètres : 
+        @param img => image where the region of interest must be defined
+
+    """
     hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
     # Define the lower and upper bounds of the black color range
@@ -158,6 +258,16 @@ def getRoi(img):
     return maskImg, startPoint, endPoint
 
 def makeGridCoords(pixel_x, pixel_y, data, matrix):
+    """!
+    @brief [Description of the function]
+
+    Paramètres : 
+        @param pixel_x => [description]
+        @param pixel_y => [description]
+        @param data => [description]
+        @param matrix => [description]
+
+    """
     if data.M_Data.before is not None:
         before = data.M_Data.before
         matrix[before[0]][before[1]] = 0
@@ -175,6 +285,17 @@ def makeGridCoords(pixel_x, pixel_y, data, matrix):
     return grid_cell_coordinates
 
 def loadArray(arr1, arr2, arr3, matrix, u_Data):
+    """!
+    @brief [Description of the function]
+
+    Paramètres : 
+        @param arr1 => [description]
+        @param arr2 => [description]
+        @param arr3 => [description]
+        @param matrix => [description]
+        @param u_Data => [description]
+
+    """
     c1 = 1
     c2 = -1
     
@@ -192,7 +313,14 @@ def loadArray(arr1, arr2, arr3, matrix, u_Data):
         x, y = map(int, cell.split("/"))
         matrix[x][y] = 6000
 
-def createGridImage(filename):
+def GetGridCoords(filename):
+    """!
+    @brief [Description of the function]
+
+    Paramètres : 
+        @param filename => image with the image 
+
+    """
     
     screenWidth = GetSystemMetrics(0)
     screenHeight = GetSystemMetrics(1)
@@ -239,26 +367,25 @@ def createGridImage(filename):
     return matrix
 
 def main():
+    """!
+    @brief [Description of the function]
+
+
+    """
     lidar = LidarX2("/dev/ttyUSB0") 
     lidar_list=[]
-    MapSide = "N"
+   
 
     #check what way the robot is facing
-    if( MapSide == "N"):
-        img_map = cv2.imread('./Mappen_zijdes/North_side.png', cv2.IMREAD_GRAYSCALE)
-        map=cv2.imread('./mappen_zijdes/Mapping_map_noord.png', cv2.IMREAD_GRAYSCALE)
 
-    elif( MapSide == "E"):
-        img_map = cv2.imread('./Mappen_zijdes/East_side.png', cv2.IMREAD_GRAYSCALE)
-        map=cv2.imread('./mappen_zijdes/Mapping_map_east.png', cv2.IMREAD_GRAYSCALE)
-
-    elif( MapSide == "S"):
-        img_map = cv2.imread('./Mappen_zijdes/South_side.png', cv2.IMREAD_GRAYSCALE)
-        map=cv2.imread('./mappen_zijdes/Mapping_map_zuid.png', cv2.IMREAD_GRAYSCALE)
-
-    elif( MapSide == "W"):
-        img_map = cv2.imread('./Mappen_zijdes/West_side.png', cv2.IMREAD_GRAYSCALE)
-        map=cv2.imread('./mappen_zijdes/Mapping_map_west.png', cv2.IMREAD_GRAYSCALE)
+    img_map_N = cv2.imread('./Mappen_zijdes/North_side.png', cv2.IMREAD_GRAYSCALE)
+    map_N=cv2.imread('./mappen_zijdes/Mapping_map_noord.png', cv2.IMREAD_GRAYSCALE)
+    img_map_E = cv2.imread('./Mappen_zijdes/East_side.png', cv2.IMREAD_GRAYSCALE)
+    map_E=cv2.imread('./mappen_zijdes/Mapping_map_east.png', cv2.IMREAD_GRAYSCALE)
+    img_map_S = cv2.imread('./Mappen_zijdes/South_side.png', cv2.IMREAD_GRAYSCALE)
+    map_S=cv2.imread('./mappen_zijdes/Mapping_map_zuid.png', cv2.IMREAD_GRAYSCALE)
+    img_map_W = cv2.imread('./Mappen_zijdes/West_side.png', cv2.IMREAD_GRAYSCALE)
+    map_W=cv2.imread('./mappen_zijdes/Mapping_map_west.png', cv2.IMREAD_GRAYSCALE)
 
     while lidar.open():
         #remove previous location image
@@ -267,6 +394,25 @@ def main():
 
         #starts the lidar
         #reads the lidar data and saves it in a list
+        direction = ser.readline().decode('utf-8').rstrip()
+
+        if(direction=="N"):
+            img_map=img_map_N
+            map=map_N
+        elif(direction=="E"):
+            img_map=img_map_E
+            map=map_E
+        elif(direction=="S"):
+            img_map=img_map_S
+            map=map_S
+        elif(direction=="W"):
+            img_map=img_map_S
+            map=map_S
+        else:
+            print(direction)
+            
+
+
         lidar_list.clear()
         for i in range(15):
             measures = lidar.getMeasures()  # Get latest lidar measures
@@ -317,8 +463,15 @@ def main():
 
         cv2.imwrite("location.png", img_map_cpy)
 
-        matrix = createGridImage("location.png")
+        matrix = GetGridCoords("location.png")
         
         cv2.waitKey(1)
 
+
+
+
+
+if __name__ == '__main__':
+    ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+    ser.reset_input_buffer()
 
