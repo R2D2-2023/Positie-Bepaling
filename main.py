@@ -1,7 +1,6 @@
 import cv2
 import os
 import numpy as np
-# from win32api import GetSystemMetrics
 from Library import LidarX2
 import time
 import math
@@ -10,44 +9,42 @@ import statistics
 
 class MouseData:
     """!
-    @brief [Description de la classe]
-
-
-    """
-    """!
-    @brief [Description of the class]
-
-
+    @class MouseData
+    @brief Represents mouse-related data and properties.
+    
+    This class encapsulates various attributes and data related to mouse behavior
+    and processing. It provides properties for managing the mouse matrix, cell size,
+    images, counters, route information, and other variables.
     """
     def __init__(self):
         """!
-        @brief Initializes 
-
-        Paramètres : 
-            @param self => initialization parameter
-
+        @brief Initializes a new instance of the MouseData class.
+        
+        Parameters:
+            @param self: Initilazes the MouseData object with default values for the matrix, cell size, images, counters, route, and other variables.
         """
         self.matrix = None
         self.cell_size = 0
         self.img = None
-        self.orig_Img = None
+        self.orig_img = None
         self.counter = 0
         self.checkpoint_counter = -5
         self.before = None
 
 class GridData:
     """!
-    @brief [Description of the class]
+    @brief Represents a grid data object.
 
-
+    The GridData class manages grid-related data, including the beginning and ending coordinates.
     """
 
     def __init__(self):
         """!
-        @brief [Description of the function]
+        @brief Constructs a new GridData object.
 
-        Paramètres : 
-            @param self => initialization parameter
+        Parameters : 
+            @param self: Initializes the GridData object with default values for the begin X and Y coordinates.
+            The start and end coordinates represent the beginning and ending coordinates for the Region of interest.
 
         """
         self.begin_X = 0
@@ -57,16 +54,19 @@ class GridData:
 
 class StoreData:
     """!
-    @brief [Description of the class]
-
-
+    @class StoreData
+    @brief Class for storing data.
+    
+    This class provides a mechanism for storing data using two different data types:
+    - GridData: Represents grid-based data.
+    - MouseData: Represents mouse-related data.
     """
     def __init__(self):
         """!
-        @brief Initializes grid and mouse parameters 
+        @brief Constructs a new StoreData object. 
 
-        Paramètres : 
-            @param self => initialization parameter
+        Parameters : 
+            @param self: initialization parameter
 
         """
         self.G_Data = GridData()
@@ -78,12 +78,14 @@ def calcPos(posX, posY, rotation, distance):
     """!
     @brief Calculates the position based on x, y values and angle and distance values 
 
-    Paramètres : 
-        @param posX => Image width 
-        @param posY => Image height
-        @param rotation => Lidar angle value
-        @param distance => Lidar distance received value
+    Parameters: 
+        @param posX: Image width 
+        @param posY: Image height
+        @param rotation: Lidar angle value
+        @param distance: Lidar distance received value
 
+    Returns:
+        @return: position X and Y values
     """
     y_Offset = math.cos(rotation * math.pi / 180) * (distance*200) #distance has been normalized so we mulitply by 200 for scaling
     x_Offset = math.sin(rotation * math.pi / 180) * (distance*200) #distance has been normalized so we mulitply by 200 for scaling
@@ -95,9 +97,11 @@ def listSplitter(list):
     """!
     @brief Takes a list containing the distance measured on each degree and splits them into separate lists for degrees and distances
 
-    Paramètres : 
-        @param list => list of the distance and degrees measured with the lidar
+    Parameters : 
+        @param list: list of the distance and degrees measured with the lidar
 
+    Returns:
+        @return: splitted values in degrees and distance
     """
     distance=[]
     degrees=[]
@@ -108,13 +112,16 @@ def listSplitter(list):
             distance.append(float(x[1].split("mm")[0]))
     return degrees, distance
 
-def GetPosition(location_map):
+def getPosition(location_map):
     """!
     @brief Gets the position of a blue circle in an image, by calculating the centroid of the largest contour in the image and getting the x and y values from the centroid
 
-    Paramètres : 
-        @param location_map => map with the current position of the car
+    Parameters: 
+        @param location_map: map with the current position of the car
 
+    Returns:
+        @return The position of the blue circle
+        @return If there is no blue circle nothing is returned
     """
     img = cv2.imread(location_map)
     if img is None:
@@ -167,7 +174,10 @@ def readTxt(filename):
     @brief Reads the data from a textfile containing key points of the grid and separates the data into 3 arrays(route, measure points and corners)  
 
     Paramètres : 
-        @param filename => file with key points on the grid
+        @param filename: file with lists of the key points on the grid
+
+    Returns:
+        @return a splitted array of key points; route, measure points and corners
 
     """
     # Read the contents of the text file
@@ -176,21 +186,24 @@ def readTxt(filename):
 
     # Split the data into separate arrays
     lines = data.split("\n")
-    array1 = lines[0].split(",") # Route data
-    array2 = lines[1].split(",") # Measure points data
-    array3 = lines[2].split(",") # Corners data
+    array_route = lines[0].split(",") # Route data
+    array_measure_location = lines[1].split(",") # Measure points data
+    array_turning = lines[2].split(",") # Corners data
     
-    return array1, array2, array3
+    return array_route, array_measure_location, array_turning
 
-def setData(img, begin, end, orig_Img):
+def setData(img, begin, end, orig_img):
     """!
-    @brief [Description of the function]
+    @brief Sets the data for image processing.
 
-    Paramètres : 
-        @param img => [description]
-        @param begin => [description]
-        @param end => [description]
-        @param orig_Img => [description]
+    Parameters : 
+        @param img: The input image.
+        @param begin: The starting coordinates of the region of interest (ROI).
+        @param end: he ending coordinates of the region of interest (ROI).
+        @param orig_img: The original image.
+
+    Returns:
+        @return A tuple containing the matrix and an instance of the StoreData class.
 
     """
     longest_dim = max(img.shape[1], img.shape[0])
@@ -204,27 +217,30 @@ def setData(img, begin, end, orig_Img):
     u_Data.G_Data.end = end
 
     roi = (begin[0], begin[1], end[0] - begin[0], end[1] - begin[1])
-    roiImage = img[roi[1]:roi[1]+roi[3], roi[0]:roi[0]+roi[2]]
+    roi_image = img[roi[1]:roi[1]+roi[3], roi[0]:roi[0]+roi[2]]
 
-    width = int(np.ceil(roiImage.shape[1] / cell_size))
-    height = int(np.ceil(roiImage.shape[0] / cell_size))
+    width = int(np.ceil(roi_image.shape[1] / cell_size))
+    height = int(np.ceil(roi_image.shape[0] / cell_size))
 
     matrix = [[0] * width for _ in range(height)]
 
     u_Data.M_Data.matrix = matrix
     u_Data.M_Data.cell_size = cell_size
     u_Data.M_Data.img = img
-    u_Data.M_Data.orig_Img = orig_Img
+    u_Data.M_Data.orig_img = orig_img
     
     return matrix, u_Data
 
 def getRoi(img):
     """!
-    @brief [Description of the function]
+    @brief Extracts the ROI from an image.
+        This function takes an image as input and returns the ROI, start point, and end point of the grid.
 
-    Paramètres : 
-        @param img => image where the region of interest must be defined
+    Parameters : 
+        @param img: The input image.
 
+    Returns A tuple containing the ROI image, start point, and end point.
+    
     """
     hsv_img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
@@ -236,7 +252,7 @@ def getRoi(img):
     mask = cv2.inRange(hsv_img, lower, upper)
     
     # Apply the mask to the original image
-    maskImg = cv2.bitwise_and(img, img, mask=mask)
+    mask_img = cv2.bitwise_and(img, img, mask=mask)
 
     # Find the coordinates of black pixels
     coords = []
@@ -261,22 +277,20 @@ def getRoi(img):
         if coord[0] > rightmostPoint[0]:
             rightmostPoint = coord
 
-    startPoint = (leftmostPoint[0], highestPoint[1])  # Starting coordinate of the grid
-    endPoint = (rightmostPoint[0], lowestPoint[1])  # Ending coordinate of the grid
-    # print(f"start {startPoint}")
-    # print(f"end {endPoint}")
+    start_point = (leftmostPoint[0], highestPoint[1])  # Starting coordinate of the grid
+    end_point = (rightmostPoint[0], lowestPoint[1])  # Ending coordinate of the grid
 
-    return maskImg, startPoint, endPoint
+    return mask_img, start_point, end_point
 
 def makeGridCoords(pixel_x, pixel_y, data, matrix):
     """!
-    @brief [Description of the function]
+    @brief This function translates the pixel coordinate to a grid coordinate
 
     Parameters : 
-        @param pixel_x => [description]
-        @param pixel_y => [description]
-        @param data => [description]
-        @param matrix => [description]
+        @param pixel_x: pixel coordinate X value
+        @param pixel_y: pixel coordinate Y value
+        @param data: The input data object containing route, measurement points, and corner attributes.
+        @param matrix: The matrix containing the values.
 
     """
     if data.M_Data.before is not None:
@@ -294,70 +308,76 @@ def makeGridCoords(pixel_x, pixel_y, data, matrix):
 
     return grid_cell_coordinates
 
-def loadArray(arr1, arr2, arr3, grid_coordinates):
+def loadArray(arr_route, arr_measurement_points, arr_turning_points, grid_coordinates):
     """!
-    @brief [Description of the function]
+    @brief This function loads an array and checks if the current position is found in the key points of the map and sends them using serial.
 
-    Paramètres : 
-        @param arr1 => [description]
-        @param arr2 => [description]
-        @param arr3 => [description]
-        @param matrix => [description]
-        @param u_Data => [description]
+    Parameters : 
+        @param arr_route: first array list, this is the drawn route
+        @param arr_measurement_points: second array list, these are the turning points
+        @param arr_turning_points: third array list, these are the measurement points
+        @param grid_coordinates: the grid coordinates of the found position
 
     """
 
-    for cell in arr1:
+    for cell in arr_route:
         xy = map(int, cell.split("/"))
         if xy == grid_coordinates:
-            print("hij zit in " + xy)
-            break
-        else:
-            print("niet op route")
-            break
+            blocked = 0
+            print("locatie")
+            ser.write(b"0\n")
+            count2 = 0
 
-    for cell in arr2:
+    for cell in arr_measurement_points:
         xy = map(int, cell.split("/"))
         if xy == grid_coordinates:
-            print("hij zit in " + xy)
-            break
-        else:
-            print("niet op een meet punt")
-            break
-
+            print("meten")
+            ser.write(b"0\n")
+            count2 = 0
         
-    for cell in arr3:
-        xy = map(int, cell.split("/"))
-        if xy == grid_coordinates:
-            print("hij zit in " + xy)
-            break
-        else:
-            print("niet op bij een bocht")
-            break
+    for cell in arr_turning_points:
+        s = str(grid_coordinates[0])+','+str(grid_coordinates[1])
+        ser1.write(s.encode())
 
 def scaleImg(orig_img):
-    screenWidth = 1536
-    screenHeight = 864
 
-    imageAspectRatio = orig_img.shape[1] / orig_img.shape[0]
+    """!
+    @brief This function scales the given image to the right size (1536x864 standard set value)
+
+    Parameters : 
+        @param orig_img: Scale the image to the correct size.
+
+    Returns:
+        @return The edited image.
+    """
+    screen_width = 1536
+    screen_height = 864
+
+    image_aspect_ratio = orig_img.shape[1] / orig_img.shape[0]
     
-    maxWidth = screenWidth
-    maxHeight = screenHeight
+    max_width = screen_width
+    max_height = screen_height
  
-    scaledWidth = maxWidth
-    scaledHeight = int(scaledWidth / imageAspectRatio)
+    scaled_width = max_width
+    scaled_height = int(scaled_width / image_aspect_ratio)
 
-    if scaledHeight > maxHeight:
-        scaledHeight = maxHeight
-        scaledWidth = int(scaledHeight * imageAspectRatio)
+    if scaled_height > max_height:
+        scaled_height = max_height
+        scaled_width = int(scaled_height * image_aspect_ratio)
 
-    posX = (screenWidth - scaledWidth) // 2
-    posY = (screenHeight - scaledHeight) // 2
-
-    orig_img = cv2.resize(orig_img, (scaledWidth, scaledHeight))
+    orig_img = cv2.resize(orig_img, (scaled_width, scaled_height))
     return orig_img
 
-def rijden(distance,degrees):
+def drive(distance,degrees):
+    """!
+    @brief This function is used to measure the distance between the lidar and an object.
+    If an object is detected within 400mm and in an angle of 0-30 and 330-360 degrees, then a 'stop' signal is sent. 
+
+    Parameters : 
+        @param distance: distance to where the lidar measures an object 
+        @param degrees: the degree of the measured object from the lidar
+
+    """
     blocked = 0
     count = 0
     count2 = 0 
@@ -380,7 +400,7 @@ def rijden(distance,degrees):
                         if blocked == 1 and min(minimum) > 400:
                             blocked = 0
 
-                            print("rijden")
+                            print("drive")
                             ser.write(b"0\n")
                             count2 = 0
                         elif min(minimum) < 400 and blocked == 0:
@@ -389,23 +409,26 @@ def rijden(distance,degrees):
                             ser.write(b"1\n")
                             count2 = 0
 
-def GetGridCoords(filename):
+def getGridCoords(filename):
     """!
-    @brief [Description of the function]
+    @brief This function is used to get the grid coordinates from a position set in an image.
+    This image is updated with every measurment of lidar.
 
-    Paramètres : 
-        @param filename => image with the image 
+    Parameters: 
+        @param filename: image with the image 
 
+    Returns:
+        @return: grid coordinates of the pixel position
     """
        
-    orig_Img = cv2.imread(filename, cv2.IMREAD_COLOR)
-    if orig_Img is None:
+    orig_img = cv2.imread(filename, cv2.IMREAD_COLOR)
+    if orig_img is None:
         print("Could not read the image")
 
-    orig_Img = scaleImg(orig_Img)
-    img, begin, end = getRoi(orig_Img)
+    orig_img = scaleImg(orig_img)
+    img, begin, end = getRoi(orig_img)
 
-    position = GetPosition('location.png')
+    position = getPosition('location.png')
     if position is not None:
         dot_x, dot_y = position
         pixel = (dot_x, dot_y)
@@ -419,12 +442,12 @@ def GetGridCoords(filename):
     else:
         print("No valid position found.")
 
-    matrix, u_Data = setData(img, begin, end, orig_Img)
+    matrix, u_Data = setData(img, begin, end, orig_img)
     
-    arr1, arr2, arr3 = readTxt("arrays.txt")
+    arr_route, arr_measurement_points, arr_turning_points = readTxt("arrays.txt")
     
     grid_coordinates = makeGridCoords(pixel[1], pixel[0], u_Data, matrix)
-    loadArray(arr1, arr2, arr3, grid_coordinates)
+    loadArray(arr_route, arr_measurement_points, arr_turning_points, grid_coordinates)
     return grid_coordinates
 
 def main():
@@ -433,18 +456,18 @@ def main():
     the live image gets matched with the loaded maps and a blue circle gets drawn on the map indicating the cars position.
     The image will be saved and loaded into a matrix to get the corresponding grid position.
     """
-    lidar_list=[]
+    lidar = LidarX2("/dev/ttyUSB0") 
+    ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+    ser1= serial.Serial('/dev/serial0', 9600, timeout=1)
+    ser1.reset_input_buffer()
 
-    #check what way the robot is facing
-    # map_
+    lidar_list=[]
     map_full = cv2.imread('./Mappen_zijdes/map_new_new_edited.png', cv2.IMREAD_GRAYSCALE)
 
     img_map_N = cv2.imread('./Mappen_zijdes/North_side.png', cv2.IMREAD_GRAYSCALE)
     map_N=cv2.imread('./Mappen_zijdes/Mapping_map_noord.png', cv2.IMREAD_GRAYSCALE)
     matching = cv2.matchTemplate(map_full, map_N, cv2.TM_CCOEFF)
     loc_full_N = np.where(matching == np.max(matching))
-    # img_map_N=cv2.rotate(img_map_N, cv2.ROTATE_90_CLOCKWISE)
-    # map_N=cv2.rotate(map_N, cv2.ROTATE_90_CLOCKWISE)
 
     img_map_E = cv2.imread('./Mappen_zijdes/East_side.png', cv2.IMREAD_GRAYSCALE)
     map_E=cv2.imread('./Mappen_zijdes/Mapping_map_oost.png', cv2.IMREAD_GRAYSCALE)
@@ -455,15 +478,11 @@ def main():
     map_S=cv2.imread('./Mappen_zijdes/Mapping_map_zuid.png', cv2.IMREAD_GRAYSCALE)
     matching = cv2.matchTemplate(map_full, map_S, cv2.TM_CCOEFF)
     loc_full_S = np.where(matching == np.max(matching))   
-    # map_S=cv2.rotate(map_S, cv2.ROTATE_90_COUNTERCLOCKWISE)
-    # img_map_S=cv2.rotate(img_map_S, cv2.ROTATE_90_COUNTERCLOCKWISE)
     
     img_map_W = cv2.imread('./Mappen_zijdes/West_side.png', cv2.IMREAD_GRAYSCALE)
     map_W=cv2.imread('./Mappen_zijdes/Mapping_map_west.png', cv2.IMREAD_GRAYSCALE)
     matching = cv2.matchTemplate(map_full, map_W, cv2.TM_CCOEFF)
     loc_full_W = np.where(matching == np.max(matching))
-    # map_W=cv2.rotate(map_W, cv2.cv2.ROTATE_180)
-    # img_map_W=cv2.rotate(img_map_W, cv2.ROTATE_180)
 
     while lidar.open():
         #remove previous location image
@@ -503,7 +522,7 @@ def main():
         
         #this makes 2 seperate lists, one with the degrees and one with the distance
         degrees, distance = listSplitter(lidar_list)
-        rijden(distance,degrees)
+        drive(distance,degrees)
 
         #this makes mm to pixels between the middle and points
         for i in range(0, len(distance)-1):
@@ -524,50 +543,31 @@ def main():
         elif(direction=="S"):
             img = cv2.rotate(img, cv2.ROTATE_180)
 
-
-
-
-        img = cv2.resize(img, (200,200)) #----------------------------------------------------------------------------------------------------------------------
+        img = cv2.resize(img, (200,200))
         uint_img = np.array(img*255).astype('uint8')
         template = uint_img.copy()
-        # print("test")   
-        # assert map_ is not None, "file could not be read, check with os.path.exists()"
-        # map_cpy = map_.copy()
 
         assert map_full is not None,"file could not be read, check with os.path.exists()"
         map_cpy = map_full.copy()
         map_cpy=cv2.cvtColor(map_cpy, cv2.COLOR_BGR2RGB)
 
-        # print(map_)
-        
-
         assert template is not None, "file could not be read, check with os.path.exists()"
         w, h = template.shape[::-1]
         res = cv2.matchTemplate(img_map, template, cv2.TM_CCOEFF) #TM_CCOEFF_NORMED
         loc = np.where(res == np.max(res))
-        # for pt in zip(*loc[::-1]):
-            # cv2.rectangle(map_cpy, pt, (pt[0] + w, pt[1] + h), (0, 0, 0), 2)
-        #     x=int(round(pt[0]+(w/2)))
-        #     y=int(round(pt[1]+(h/2)))
-        #     cv2.circle(map_cpy, (x,y),2, (255, 0, 0), 4)
-        # print(int(loc_full_N[0]))
+
         if(direction=="W"):
             for pt in zip(*loc[::-1]):
                 x=int(round(pt[0]+(w/2)))
                 y=int(round(pt[1]+(h/2)))
                 cv2.circle(map_cpy, ((x+int(loc_full_N[1])),(y+int(loc_full_N[0]))),2, (255, 0, 0), 4)
-                
-                # cv2.rectangle(map_cpy, pt, ((pt[0] + w), (pt[1] + h)+), (0, 0, 0), 2)
          
         elif(direction=="N"):
             for pt in zip(*loc[::-1]):
                 x=int(round(pt[0]+(w/2)))
                 y=int(round(pt[1]+(h/2)))
                 cv2.circle(map_cpy, ((x+int(loc_full_E[1])),(y+int(loc_full_E[0]))),3, (255, 0, 0), 5)
-                
-                # cv2.rectangle(map_cpy, pt, (pt[0] + w, pt[1] + h), (0, 0, 0), 2)
-                # print(x+int(loc_full_E[1]))
-                # print(y+int(loc_full_E[0]))
+
         elif(direction=="E"):
             for pt in zip(*loc[::-1]):
                 x=int(round(pt[0]+(w/2)))
@@ -584,24 +584,12 @@ def main():
             print(direction)
 
         map_cpy = scaleImg(map_cpy)
-        # print("show")
         cv2.imshow("LIDAR Image", map_cpy)
-        # cv2.waitKey(1000000)
-
         cv2.imwrite("location.png", map_cpy)
-
-        coords = GetGridCoords("location.png")
-        # print(coords)
-        # print(matrix)
-        s = str(coords[0])+','+str(coords[1])
-        ser1.write(s.encode())
-        
+        coords = getGridCoords("location.png")
+       
 
         cv2.waitKey(1)
 
 if __name__ == '__main__':
-    lidar = LidarX2("/dev/ttyUSB0") 
-    ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
-    ser1= serial.Serial('/dev/serial0', 9600, timeout=1)
-    ser1.reset_input_buffer()
     main()
