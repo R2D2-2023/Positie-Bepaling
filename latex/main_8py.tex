@@ -1,0 +1,286 @@
+\doxysection{main.\+py File Reference}
+\hypertarget{main_8py}{}\label{main_8py}\index{main.py@{main.py}}
+
+
+Code for determining the position on a map and converting it to a grid position.  
+
+
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classmain_1_1_mouse_data}{main.\+Mouse\+Data}}
+\begin{DoxyCompactList}\small\item\em Represents mouse-\/related data and properties. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classmain_1_1_grid_data}{main.\+Grid\+Data}}
+\begin{DoxyCompactList}\small\item\em Represents a grid data object. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classmain_1_1_store_data}{main.\+Store\+Data}}
+\begin{DoxyCompactList}\small\item\em Class for storing data. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{main_8py_ad3a1170c408710f25576d57d64fc4a36}{main.\+calc\+Pos}} (posX, posY, rotation, distance)
+\begin{DoxyCompactList}\small\item\em Calculates the position based on x, y values and angle and distance values. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{main_8py_a170b0872c2fc6fb6e09f32277bdf3a0d}{main.\+list\+Splitter}} (list)
+\begin{DoxyCompactList}\small\item\em Takes a list containing the distance measured on each degree and splits them into separate lists for degrees and distances. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{main_8py_a7fe23af6952c9f87d2f174c8b106a515}{main.\+get\+Position}} (location\+\_\+map)
+\begin{DoxyCompactList}\small\item\em Gets the position of a blue circle in an image, by calculating the centroid of the largest contour in the image and getting the x and y values from the centroid. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{main_8py_af7cc8ef425df7e7b6f6f005e3cc7f1eb}{main.\+read\+Txt}} (filename)
+\begin{DoxyCompactList}\small\item\em Reads the data from a textfile containing key points of the grid and separates the data into 3 arrays(route, measure points and corners) ~\newline
+ \end{DoxyCompactList}\item 
+\mbox{\hyperlink{main_8py_ad32293a3e43fccfe70b2f5b30d432948}{main.\+set\+Data}} (img, begin, end, orig\+\_\+img)
+\begin{DoxyCompactList}\small\item\em Sets the data for image processing. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{main_8py_a8057462a10e645412ffb096a01f60e62}{main.\+get\+Roi}} (img)
+\begin{DoxyCompactList}\small\item\em Extracts the ROI from an image. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{main_8py_abaf3752a83d7cbbf6f3081c3183a6a21}{main.\+make\+Grid\+Coords}} (pixel\+\_\+x, pixel\+\_\+y, data, matrix)
+\begin{DoxyCompactList}\small\item\em This function translates the pixel coordinate to a grid coordinate. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{main_8py_a110acd903a204b79c5cbf70e2e33063c}{main.\+load\+Array}} (arr\+\_\+route, arr\+\_\+measurement\+\_\+points, arr\+\_\+turning\+\_\+points, grid\+\_\+coordinates)
+\begin{DoxyCompactList}\small\item\em This function loads an array and checks if the current position is found in the key points of the map and sends them using serial. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{main_8py_a6b895561cacb2539383314fd12a19001}{main.\+scale\+Img}} (orig\+\_\+img)
+\begin{DoxyCompactList}\small\item\em This function scales the given image to the right size (1536x864 standard set value) \end{DoxyCompactList}\item 
+\mbox{\hyperlink{main_8py_a81c4998ba91c19ef7b178d52d86dd9c6}{main.\+drive}} (distance, degrees)
+\begin{DoxyCompactList}\small\item\em This function is used to measure the distance between the lidar and an object. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{main_8py_a8d66b8d82516254daf9df6ee5237e7b8}{main.\+get\+Grid\+Coords}} (filename)
+\begin{DoxyCompactList}\small\item\em This function is used to get the grid coordinates from a position set in an image. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{main_8py_a3140e9a5b6a71ffbf498198cfc471b88}{main.\+main}} ()
+\begin{DoxyCompactList}\small\item\em Sets lidar connection and loads map images, generates a live image based on the received lidar data, the live image gets matched with the loaded maps and a blue circle gets drawn on the map indicating the cars position. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Code for determining the position on a map and converting it to a grid position. 
+
+
+
+\doxysubsection{Function Documentation}
+\Hypertarget{main_8py_ad3a1170c408710f25576d57d64fc4a36}\label{main_8py_ad3a1170c408710f25576d57d64fc4a36} 
+\index{main.py@{main.py}!calcPos@{calcPos}}
+\index{calcPos@{calcPos}!main.py@{main.py}}
+\doxysubsubsection{\texorpdfstring{calcPos()}{calcPos()}}
+{\footnotesize\ttfamily main.\+calc\+Pos (\begin{DoxyParamCaption}\item[{}]{posX,  }\item[{}]{posY,  }\item[{}]{rotation,  }\item[{}]{distance }\end{DoxyParamCaption})}
+
+
+
+Calculates the position based on x, y values and angle and distance values. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em posX} & Image width \\
+\hline
+{\em posY} & Image height \\
+\hline
+{\em rotation} & Lidar angle value \\
+\hline
+{\em distance} & Lidar distance received value\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+position X and Y values 
+\end{DoxyReturn}
+\Hypertarget{main_8py_a81c4998ba91c19ef7b178d52d86dd9c6}\label{main_8py_a81c4998ba91c19ef7b178d52d86dd9c6} 
+\index{main.py@{main.py}!drive@{drive}}
+\index{drive@{drive}!main.py@{main.py}}
+\doxysubsubsection{\texorpdfstring{drive()}{drive()}}
+{\footnotesize\ttfamily main.\+drive (\begin{DoxyParamCaption}\item[{}]{distance,  }\item[{}]{degrees }\end{DoxyParamCaption})}
+
+
+
+This function is used to measure the distance between the lidar and an object. 
+
+If an object is detected within 400mm and in an angle of 0-\/30 and 330-\/360 degrees, then a \textquotesingle{}stop\textquotesingle{} signal is sent.
+
+
+\begin{DoxyParams}{Parameters}
+{\em distance} & distance to where the lidar measures an object \\
+\hline
+{\em degrees} & the degree of the measured object from the lidar \\
+\hline
+\end{DoxyParams}
+\Hypertarget{main_8py_a8d66b8d82516254daf9df6ee5237e7b8}\label{main_8py_a8d66b8d82516254daf9df6ee5237e7b8} 
+\index{main.py@{main.py}!getGridCoords@{getGridCoords}}
+\index{getGridCoords@{getGridCoords}!main.py@{main.py}}
+\doxysubsubsection{\texorpdfstring{getGridCoords()}{getGridCoords()}}
+{\footnotesize\ttfamily main.\+get\+Grid\+Coords (\begin{DoxyParamCaption}\item[{}]{filename }\end{DoxyParamCaption})}
+
+
+
+This function is used to get the grid coordinates from a position set in an image. 
+
+This image is updated with every measurment of lidar.
+
+
+\begin{DoxyParams}{Parameters}
+{\em filename} & image with the image\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+grid coordinates of the pixel position 
+\end{DoxyReturn}
+\Hypertarget{main_8py_a7fe23af6952c9f87d2f174c8b106a515}\label{main_8py_a7fe23af6952c9f87d2f174c8b106a515} 
+\index{main.py@{main.py}!getPosition@{getPosition}}
+\index{getPosition@{getPosition}!main.py@{main.py}}
+\doxysubsubsection{\texorpdfstring{getPosition()}{getPosition()}}
+{\footnotesize\ttfamily main.\+get\+Position (\begin{DoxyParamCaption}\item[{}]{location\+\_\+map }\end{DoxyParamCaption})}
+
+
+
+Gets the position of a blue circle in an image, by calculating the centroid of the largest contour in the image and getting the x and y values from the centroid. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em location\+\_\+map} & map with the current position of the car\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The position of the blue circle 
+
+If there is no blue circle nothing is returned 
+\end{DoxyReturn}
+\Hypertarget{main_8py_a8057462a10e645412ffb096a01f60e62}\label{main_8py_a8057462a10e645412ffb096a01f60e62} 
+\index{main.py@{main.py}!getRoi@{getRoi}}
+\index{getRoi@{getRoi}!main.py@{main.py}}
+\doxysubsubsection{\texorpdfstring{getRoi()}{getRoi()}}
+{\footnotesize\ttfamily main.\+get\+Roi (\begin{DoxyParamCaption}\item[{}]{img }\end{DoxyParamCaption})}
+
+
+
+Extracts the ROI from an image. 
+
+This function takes an image as input and returns the ROI, start point, and end point of the grid.
+
+
+\begin{DoxyParams}{Parameters}
+{\em img} & The input image.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A tuple containing the ROI image, start point, and end point. 
+\end{DoxyReturn}
+\Hypertarget{main_8py_a170b0872c2fc6fb6e09f32277bdf3a0d}\label{main_8py_a170b0872c2fc6fb6e09f32277bdf3a0d} 
+\index{main.py@{main.py}!listSplitter@{listSplitter}}
+\index{listSplitter@{listSplitter}!main.py@{main.py}}
+\doxysubsubsection{\texorpdfstring{listSplitter()}{listSplitter()}}
+{\footnotesize\ttfamily main.\+list\+Splitter (\begin{DoxyParamCaption}\item[{}]{list }\end{DoxyParamCaption})}
+
+
+
+Takes a list containing the distance measured on each degree and splits them into separate lists for degrees and distances. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em list} & list of the distance and degrees measured with the lidar\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+splitted values in degrees and distance 
+\end{DoxyReturn}
+\Hypertarget{main_8py_a110acd903a204b79c5cbf70e2e33063c}\label{main_8py_a110acd903a204b79c5cbf70e2e33063c} 
+\index{main.py@{main.py}!loadArray@{loadArray}}
+\index{loadArray@{loadArray}!main.py@{main.py}}
+\doxysubsubsection{\texorpdfstring{loadArray()}{loadArray()}}
+{\footnotesize\ttfamily main.\+load\+Array (\begin{DoxyParamCaption}\item[{}]{arr\+\_\+route,  }\item[{}]{arr\+\_\+measurement\+\_\+points,  }\item[{}]{arr\+\_\+turning\+\_\+points,  }\item[{}]{grid\+\_\+coordinates }\end{DoxyParamCaption})}
+
+
+
+This function loads an array and checks if the current position is found in the key points of the map and sends them using serial. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em arr\+\_\+route} & first array list, this is the drawn route \\
+\hline
+{\em arr\+\_\+measurement\+\_\+points} & second array list, these are the turning points \\
+\hline
+{\em arr\+\_\+turning\+\_\+points} & third array list, these are the measurement points \\
+\hline
+{\em grid\+\_\+coordinates} & the grid coordinates of the found position \\
+\hline
+\end{DoxyParams}
+\Hypertarget{main_8py_a3140e9a5b6a71ffbf498198cfc471b88}\label{main_8py_a3140e9a5b6a71ffbf498198cfc471b88} 
+\index{main.py@{main.py}!main@{main}}
+\index{main@{main}!main.py@{main.py}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily main.\+main (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Sets lidar connection and loads map images, generates a live image based on the received lidar data, the live image gets matched with the loaded maps and a blue circle gets drawn on the map indicating the cars position. 
+
+The image will be saved and loaded into a matrix to get the corresponding grid position. \Hypertarget{main_8py_abaf3752a83d7cbbf6f3081c3183a6a21}\label{main_8py_abaf3752a83d7cbbf6f3081c3183a6a21} 
+\index{main.py@{main.py}!makeGridCoords@{makeGridCoords}}
+\index{makeGridCoords@{makeGridCoords}!main.py@{main.py}}
+\doxysubsubsection{\texorpdfstring{makeGridCoords()}{makeGridCoords()}}
+{\footnotesize\ttfamily main.\+make\+Grid\+Coords (\begin{DoxyParamCaption}\item[{}]{pixel\+\_\+x,  }\item[{}]{pixel\+\_\+y,  }\item[{}]{data,  }\item[{}]{matrix }\end{DoxyParamCaption})}
+
+
+
+This function translates the pixel coordinate to a grid coordinate. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pixel\+\_\+x} & pixel coordinate X value \\
+\hline
+{\em pixel\+\_\+y} & pixel coordinate Y value \\
+\hline
+{\em data} & The input data object containing route, measurement points, and corner attributes. \\
+\hline
+{\em matrix} & The matrix containing the values. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{main_8py_af7cc8ef425df7e7b6f6f005e3cc7f1eb}\label{main_8py_af7cc8ef425df7e7b6f6f005e3cc7f1eb} 
+\index{main.py@{main.py}!readTxt@{readTxt}}
+\index{readTxt@{readTxt}!main.py@{main.py}}
+\doxysubsubsection{\texorpdfstring{readTxt()}{readTxt()}}
+{\footnotesize\ttfamily main.\+read\+Txt (\begin{DoxyParamCaption}\item[{}]{filename }\end{DoxyParamCaption})}
+
+
+
+Reads the data from a textfile containing key points of the grid and separates the data into 3 arrays(route, measure points and corners) ~\newline
+ 
+
+
+\begin{DoxyParams}{Parameters}
+{\em filename} & file with lists of the key points on the grid\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a splitted array of key points; route, measure points and corners 
+\end{DoxyReturn}
+\Hypertarget{main_8py_a6b895561cacb2539383314fd12a19001}\label{main_8py_a6b895561cacb2539383314fd12a19001} 
+\index{main.py@{main.py}!scaleImg@{scaleImg}}
+\index{scaleImg@{scaleImg}!main.py@{main.py}}
+\doxysubsubsection{\texorpdfstring{scaleImg()}{scaleImg()}}
+{\footnotesize\ttfamily main.\+scale\+Img (\begin{DoxyParamCaption}\item[{}]{orig\+\_\+img }\end{DoxyParamCaption})}
+
+
+
+This function scales the given image to the right size (1536x864 standard set value) 
+
+
+\begin{DoxyParams}{Parameters}
+{\em orig\+\_\+img} & Scale the image to the correct size.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The edited image. 
+\end{DoxyReturn}
+\Hypertarget{main_8py_ad32293a3e43fccfe70b2f5b30d432948}\label{main_8py_ad32293a3e43fccfe70b2f5b30d432948} 
+\index{main.py@{main.py}!setData@{setData}}
+\index{setData@{setData}!main.py@{main.py}}
+\doxysubsubsection{\texorpdfstring{setData()}{setData()}}
+{\footnotesize\ttfamily main.\+set\+Data (\begin{DoxyParamCaption}\item[{}]{img,  }\item[{}]{begin,  }\item[{}]{end,  }\item[{}]{orig\+\_\+img }\end{DoxyParamCaption})}
+
+
+
+Sets the data for image processing. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em img} & The input image. \\
+\hline
+{\em begin} & The starting coordinates of the region of interest (ROI). \\
+\hline
+{\em end} & he ending coordinates of the region of interest (ROI). \\
+\hline
+{\em orig\+\_\+img} & The original image.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A tuple containing the matrix and an instance of the Store\+Data class. 
+\end{DoxyReturn}
