@@ -1,7 +1,7 @@
 import cv2
 import os
 import numpy as np
-from win32api import GetSystemMetrics
+# from win32api import GetSystemMetrics
 from Library import LidarX2
 import time
 import math
@@ -322,8 +322,8 @@ def GetGridCoords(filename):
 
     """
     
-    screenWidth = GetSystemMetrics(0)
-    screenHeight = GetSystemMetrics(1)
+    screenWidth = 1536
+    screenHeight = 864
 
     orig_Img = cv2.imread(filename, cv2.IMREAD_COLOR)
     if orig_Img is None:
@@ -394,11 +394,11 @@ def main():
 
         #starts the lidar
         #reads the lidar data and saves it in a list
-        direction = ser.readline().decode('utf-8').rstrip()
-
+        # direction = ser.readline().decode('utf-8').rstrip()
+        direction="E"
         if(direction=="N"):
             img_map=img_map_N
-            map=map_N
+            map=map_N.copy
         elif(direction=="E"):
             img_map=img_map_E
             map=map_E
@@ -464,7 +464,7 @@ def main():
         cv2.imwrite("location.png", img_map_cpy)
 
         matrix = GetGridCoords("location.png")
-        
+        print(matrix)
         cv2.waitKey(1)
 
 
@@ -472,6 +472,6 @@ def main():
 
 
 if __name__ == '__main__':
-    ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
-    ser.reset_input_buffer()
-
+    # ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+    # ser.reset_input_buffer()
+    main()
