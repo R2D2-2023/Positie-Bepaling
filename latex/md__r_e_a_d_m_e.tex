@@ -1,0 +1,91 @@
+\chapter{Positie-\/\+Bepaling}
+\hypertarget{md__r_e_a_d_m_e}{}\label{md__r_e_a_d_m_e}\index{Positie-\/Bepaling@{Positie-\/Bepaling}}
+\label{md__r_e_a_d_m_e_autotoc_md0}%
+\Hypertarget{md__r_e_a_d_m_e_autotoc_md0}%
+\hypertarget{md__r_e_a_d_m_e_autotoc_md1}{}\doxysection{\texorpdfstring{Description}{Description}}\label{md__r_e_a_d_m_e_autotoc_md1}
+The Position Determination System is a Python program that uses Li\+DAR technology to estimate the position of an movign vehicle in a given environment. The system collects data from the Li\+DAR sensor, applies a position estimation algorithm, and provides the coordinates of the object.\hypertarget{md__r_e_a_d_m_e_autotoc_md2}{}\doxysection{\texorpdfstring{Requirements}{Requirements}}\label{md__r_e_a_d_m_e_autotoc_md2}
+
+\begin{DoxyItemize}
+\item Python version \href{https://www.python.org/downloads/release/python-392/}{\texttt{ 3.\+9.\+x}} or higher (3.\+9.\+2 is the recommended version)
+\item Installation of \href{requirements.txt}{\texttt{ requirements.\+txt}}
+\item The \href{https://github.com/nesnes/YDLidarX2_python}{\texttt{ YDLidar Library}}
+\end{DoxyItemize}\hypertarget{md__r_e_a_d_m_e_autotoc_md3}{}\doxysection{\texorpdfstring{Hardware requirements}{Hardware requirements}}\label{md__r_e_a_d_m_e_autotoc_md3}
+
+\begin{DoxyItemize}
+\item \href{https://www.raspberrypi.com/products/raspberry-pi-4-model-b/}{\texttt{ Raspberry Pi 4}}
+\item \href{https://www.ydlidar.com/products/view/6.html}{\texttt{ YDLidar X2}}
+\item \href{https://www.amazon.nl/ARCELI-versnellingsmeter-gyroscoop-versnellingssensor-gegevensuitgang/dp/B07BVXN2GP/ref=asc_df_B07BVXN2GP/?tag=nlshogostdde-21&linkCode=df0&hvadid=430548884871&hvpos=&hvnetw=g&hvrand=10590259427188414527&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9063545&hvtargid=pla-928293154057&psc=1}{\texttt{ gyroscope MPU6050}}
+\end{DoxyItemize}\hypertarget{md__r_e_a_d_m_e_autotoc_md4}{}\doxysection{\texorpdfstring{Installation}{Installation}}\label{md__r_e_a_d_m_e_autotoc_md4}
+
+\begin{DoxyEnumerate}
+\item Download and install raspberry Pi OS using the following guide\+: \href{https://www.raspberrypi.com/documentation/computers/getting-started.html}{\texttt{ https\+://www.\+raspberrypi.\+com/documentation/computers/getting-\/started.\+html}}
+\item Set resolution to 1536x864
+\begin{DoxyItemize}
+\item using Raspberry Pi OS
+\begin{DoxyItemize}
+\item open a Terminal window using {\ttfamily Ctrl+\+Alt+T} and type in {\ttfamily sudo nano /etc/xdg/autostart/vnc\+\_\+xrandr.desktop} and edit {\ttfamily 1920 1080} to {\ttfamily 1536 864}.~\newline
+ This is the default resolution used for this program and must be set for it to work propperly.
+\end{DoxyItemize}
+\item using Windows
+\begin{DoxyItemize}
+\item set resolution to 1920x1080 with a scaling of 125\%
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item Download and install Python
+\item Clone the repository 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git\ clone\ https://github.com/R2D2-\/2023/Positie-\/Bepaling}
+
+\end{DoxyCode}
+
+\item install the required libraries 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git\ clone\ https://github.com/nesnes/YDLidarX2\_python}
+
+\end{DoxyCode}
+ 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{pip\ install\ -\/r\ requirements.txt}
+
+\end{DoxyCode}
+ 
+\end{DoxyEnumerate}\hypertarget{md__r_e_a_d_m_e_autotoc_md5}{}\doxysection{\texorpdfstring{Usage}{Usage}}\label{md__r_e_a_d_m_e_autotoc_md5}
+To run the code to determine the position, follow these instructions\+:
+\begin{DoxyEnumerate}
+\item go to the command line( Terminal ). {\ttfamily Ctrl+\+Alt+T}
+\item go to the folder where the code is located {\ttfamily cd \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}path/to/your/repository\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}
+\item Run {\ttfamily python \doxylink{main_8py}{main.\+py}}
+\end{DoxyEnumerate}
+
+For more code regarding this project see\+: \href{https://github.com/orgs/R2D2-2023/repositories}{\texttt{ M3-\/S Project}}\hypertarget{md__r_e_a_d_m_e_autotoc_md6}{}\doxysection{\texorpdfstring{Authors\+:}{Authors:}}\label{md__r_e_a_d_m_e_autotoc_md6}
+
+\begin{DoxyItemize}
+\item \href{https://github.com/Boehmer2003}{\texttt{ @\+Boehmer2003}} -\/ Team Lead
+\item \href{https://github.com/northernlakeNL}{\texttt{ @northernlake\+NL}} -\/ Technical Lead
+\item \href{https://github.com/Ilias-a}{\texttt{ @\+Ilias-\/a}} -\/ Product Owner
+\item \href{https://github.com/Tjees}{\texttt{ @\+Tjees}} -\/ Developer 
+\end{DoxyItemize}\hypertarget{md__r_e_a_d_m_e_autotoc_md7}{}\doxysubsection{\texorpdfstring{Contributors\+:}{Contributors:}}\label{md__r_e_a_d_m_e_autotoc_md7}
+
+\begin{DoxyItemize}
+\item \href{https://github.com/BasvandenBergh}{\texttt{ @\+Basvanden\+Bergh}} -\/ Team Lead \href{https://github.com/R2D2-2023/Mapping}{\texttt{ Team Mappig}}
+\item \href{https://www.github.com/jamesonLin}{\texttt{ @jameson\+Lin}} -\/ Technical Lead \href{https://github.com/R2D2-2023/Mapping}{\texttt{ Team Mappig}}
+\item \href{https://github.com/Jorismaas}{\texttt{ @\+Jorismaas}} -\/ Product Owner \href{https://github.com/R2D2-2023/Mapping}{\texttt{ Team Mappig}}
+\item \href{https://github.com/JSaurusRex}{\texttt{ @\+JSaurus\+Rex}} -\/ Developer \href{https://github.com/R2D2-2023/Mapping}{\texttt{ Team Mappig}}
+\item \href{https://github.com/LukkenS-HU}{\texttt{ @\+LukkenS-\/HU}} -\/ Developer \href{https://github.com/R2D2-2023/Mapping}{\texttt{ Team Mappig}}
+\end{DoxyItemize}\hypertarget{md__r_e_a_d_m_e_autotoc_md8}{}\doxysection{\texorpdfstring{License}{License}}\label{md__r_e_a_d_m_e_autotoc_md8}
+\href{https://choosealicense.com/licenses/mit/}{\texttt{ }}\hypertarget{md__r_e_a_d_m_e_autotoc_md9}{}\doxysection{\texorpdfstring{Acknowledgements}{Acknowledgements}}\label{md__r_e_a_d_m_e_autotoc_md9}
+
+\begin{DoxyItemize}
+\item The Lidar library was made by \href{https://github.com/nesnes}{\texttt{ nesnes}}, this made it possible to do our project the way we wanted to.
+\item \href{https://docs.opencv.org/3.4/index.html}{\texttt{ Open\+CV Library}}
+\item \href{https://numpy.org/doc/stable/}{\texttt{ Numpy Library}}
+\item The project was made possible by \href{https://www.internationalhu.com/}{\texttt{ The university of applied science Utrecht}}
+\item The project was guided by\+:
+\begin{DoxyItemize}
+\item \href{https://github.com/orgs/R2D2-2023/people/n0harm}{\texttt{ Harm Snippe}} (Teacher)
+\item \href{https://github.com/orgs/R2D2-2023/people/leojenns}{\texttt{ Leo Jenneskens}} (Teacher)
+\item \href{https://github.com/orgs/R2D2-2023/people/KevinPatist}{\texttt{ Kevin Patist}} (teaching assistant)
+\item \href{https://github.com/orgs/R2D2-2023/people/JariKanarie}{\texttt{ Jari Fuijkschot}} (teaching assistant)
+\item \href{https://github.com/orgs/R2D2-2023/people/Gian1080}{\texttt{ Gianluca Piccardo}} (teaching assistant) 
+\end{DoxyItemize}
+\end{DoxyItemize}
